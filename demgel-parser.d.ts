@@ -1,1 +1,1 @@
-export * from './DemgelParser';
+export * from './ts/DemgelParser';

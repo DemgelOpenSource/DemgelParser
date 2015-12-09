@@ -1,4 +1,4 @@
-import {ITokenRegex, ISource} from '../modules/TokenRegex';
+import {ITokenRegex, ISource} from './TokenRegex';
 
 export interface IParseSpec {
 	regexTokens: Array<ITokenRegex>;

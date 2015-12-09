@@ -1,4 +1,4 @@
-import {IParseSpec} from './modes/Specs';
+import {IParseSpec} from './Specs';
 import {MarkdownSpec} from './modes/markdown';
 
 export class ParserOptions {

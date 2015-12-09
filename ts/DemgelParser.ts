@@ -1,5 +1,5 @@
-import {Renderer} from './modules/Renderer';
-import {TokenManager} from './modules/TokenManager';
+import {Renderer} from './Renderer';
+import {TokenManager} from './TokenManager';
 import {ParserOptions} from './ParserOptions';
 
 export class DemgelParser {

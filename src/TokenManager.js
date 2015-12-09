@@ -1,5 +1,5 @@
 var TokenRegex_1 = require('./TokenRegex');
-var Helpers_1 = require('../Helpers');
+var Helpers_1 = require('./Helpers');
 var TokenManager = (function () {
     function TokenManager(options) {
         this.options = options;

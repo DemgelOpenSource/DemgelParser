@@ -1,4 +1,4 @@
-var TokenRegex_1 = require('../modules/TokenRegex');
+var TokenRegex_1 = require('../TokenRegex');
 var Helpers_1 = require('../Helpers');
 var MarkdownSpec = (function () {
     function MarkdownSpec() {

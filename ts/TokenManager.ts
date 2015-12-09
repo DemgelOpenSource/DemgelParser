@@ -1,7 +1,7 @@
 import {IToken} from './Token';
 import {ITokenRegex, TokenParseType, ISource} from './TokenRegex'
-import {ParserOptions} from '../ParserOptions';
-import {escape} from '../Helpers';
+import {ParserOptions} from './ParserOptions';
+import {escape} from './Helpers';
 
 export class TokenManager {
 	private _inline: Array<ITokenRegex> = [];
