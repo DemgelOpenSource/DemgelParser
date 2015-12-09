@@ -3,14 +3,21 @@
   "version": "0.0.1",
   "description": "A General Purpose parser for various markup languages as well as custom markup",
   "main": "DemgelParser.js",
+  "author": "Craig <tenowg@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DemgelOpenSource/DemgelParser"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/DemgelOpenSource/DemgelParser/issues"
   },
   "keywords": [
     "parse",
     "markup",
     "markdown"
   ],
-  "author": "tenowg <Craig Russell>",
   "license": "MIT"
 }
