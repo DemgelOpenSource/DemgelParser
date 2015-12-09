@@ -34,4 +34,3 @@ function replace(regex, opt) {
     };
 }
 exports.replace = replace;
-//# sourceMappingURL=Helpers.js.map

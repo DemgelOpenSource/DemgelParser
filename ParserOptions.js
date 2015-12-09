@@ -18,4 +18,3 @@ var ParserOptions = (function () {
     return ParserOptions;
 })();
 exports.ParserOptions = ParserOptions;
-//# sourceMappingURL=ParserOptions.js.map

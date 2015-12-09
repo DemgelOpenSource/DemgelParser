@@ -3,7 +3,6 @@ var Helpers_1 = require('../Helpers');
 var TokenManager = (function () {
     function TokenManager(options) {
         this.options = options;
-        //private _tokens: Array<IToken> = [];
         this._inline = [];
         this._block = [];
     }
@@ -84,12 +83,7 @@ var TokenManager = (function () {
                 }
             }
         }
-        // this will be done last on all token text
-        if (this.options.sanitize) {
-            token.text.source = Helpers_1.escape(token.text.source);
-        }
     };
     return TokenManager;
 })();
 exports.TokenManager = TokenManager;
-//# sourceMappingURL=TokenManager.js.map

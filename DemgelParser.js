@@ -22,4 +22,3 @@ var DemgelParser = (function () {
     return DemgelParser;
 })();
 exports.DemgelParser = DemgelParser;
-//# sourceMappingURL=DemgelParser.js.map

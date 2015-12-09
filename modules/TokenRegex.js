@@ -4,4 +4,3 @@
     TokenParseType[TokenParseType["InlineBlock"] = 2] = "InlineBlock";
 })(exports.TokenParseType || (exports.TokenParseType = {}));
 var TokenParseType = exports.TokenParseType;
-//# sourceMappingURL=TokenRegex.js.map
