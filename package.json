@@ -2,7 +2,7 @@
   "name": "demgel-parser",
   "version": "0.0.1",
   "description": "A General Purpose parser for various markup languages as well as custom markup",
-  "main": "DemgelParser.js",
+  "main": "src/DemgelParser.js",
   "author": "Craig <tenowg@gmail.com>",
   "repository": {
     "type": "git",
