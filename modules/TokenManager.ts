@@ -4,7 +4,6 @@ import {ParserOptions} from '../ParserOptions';
 import {escape} from '../Helpers';
 
 export class TokenManager {
-	//private _tokens: Array<IToken> = [];
 	private _inline: Array<ITokenRegex> = [];
 	private _block: Array<ITokenRegex> = [];
 	
@@ -86,10 +85,6 @@ export class TokenManager {
 					var retTokens = regex.apply(token.text, matches);
 					for(var ii = 0; ii < retTokens.length; ii++) {
 						token.inlineTokens.push(retTokens[ii]);
-						// if (retTokens[ii].processBlock) {
-						// 	token.inlineTokens = token.inlineTokens.concat(this.tokenize(retTokens[ii].text));
-						// }
-						//this.tokenizeInline(retTokens[ii]);
 						if (this.options.sanitize) {
 							if (token.sanitize == null || (token.sanitize)) {
 								retTokens[ii].text.source = escape(retTokens[ii].text.source);
@@ -99,10 +94,6 @@ export class TokenManager {
 					break;
 				}
 			}
-		}
-		// this will be done last on all token text
-		if (this.options.sanitize) {
-			token.text.source = escape(token.text.source);
 		}
 	}
 }

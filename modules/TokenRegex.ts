@@ -17,9 +17,6 @@ export interface ITokenRegex {
 	apply(source: ISource, matches: RegExpExecArray) : Array<IToken>;
 }
 
-/**
- * How a Capture is handled and its value
- */
 export interface ISource {
 	source: string;
 }

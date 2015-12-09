@@ -74,10 +74,6 @@ var TokenManager = (function () {
                     var retTokens = regex.apply(token.text, matches);
                     for (var ii = 0; ii < retTokens.length; ii++) {
                         token.inlineTokens.push(retTokens[ii]);
-                        // if (retTokens[ii].processBlock) {
-                        // 	token.inlineTokens = token.inlineTokens.concat(this.tokenize(retTokens[ii].text));
-                        // }
-                        //this.tokenizeInline(retTokens[ii]);
                         if (this.options.sanitize) {
                             if (token.sanitize == null || (token.sanitize)) {
                                 retTokens[ii].text.source = Helpers_1.escape(retTokens[ii].text.source);

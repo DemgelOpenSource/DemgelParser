@@ -7,6 +7,8 @@ DemgelParser uses ```modes``` to handle parsing. Modes are the backbone of this 
 ### Examples
 To see some example modes, look in the modes directory. Currently ```markdown``` is currently the most complete markup language supported.
 
+## Usage
+
 ## Caveats
 DemgelParser was not written to be fast, it was written to be customizable. While it should still be fast enough for most website to render previews, don't expect blazing speeds on large pages. Eventually, with enough community help, this case could be removed, and this could became a truely useful and fast parser for markup languages.
 
