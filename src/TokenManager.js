@@ -87,3 +87,4 @@ var TokenManager = (function () {
     return TokenManager;
 })();
 exports.TokenManager = TokenManager;
+//# sourceMappingURL=TokenManager.js.map

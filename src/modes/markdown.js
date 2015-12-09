@@ -211,3 +211,4 @@ var InlineText = (function () {
     };
     return InlineText;
 })();
+//# sourceMappingURL=markdown.js.map
