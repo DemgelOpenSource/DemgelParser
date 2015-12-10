@@ -4,7 +4,8 @@
 		"module": "commonjs",
 		"sourceMap": true,
 		"outDir": "./src",
+		"inlineSourceMap": true,
 		"declaration": true,
-		"sourceRoot": "."
+		"sourceRoot": "./ts"
 	}
 }
