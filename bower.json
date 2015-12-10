@@ -1,0 +1,23 @@
+{
+  "name": "demgel-parser",
+  "description": "A General Purpose parser for various markup languages as well as custom markup",
+  "main": "src/DemgelParser.js",
+  "authors": [
+    "Craig <tenowg@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "parse",
+    "markup",
+    "markdown"
+  ],
+  "homepage": "https://github.com/DemgelOpenSource/DemgelParser",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
