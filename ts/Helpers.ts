@@ -1,3 +1,5 @@
+import {ParserOptions} from './ParserOptions';
+
 export function escape(html: string, encode?: boolean) {
   return html
     .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
@@ -30,4 +32,35 @@ export function replace(regex, opt?) : any {
 		regex = regex.replace(name, val);
 		return self;
 	};
+}
+
+export function validateStyle(source: string, options: ParserOptions) : string {
+  var retString = "";
+  while(source) {
+    var matches = options.compiledStyles.exec(source);
+      if (matches) {
+        source = source.substring(matches[0].length);
+        if (matches[1]) {
+          retString = retString + matches[2] + ": " + matches[3] + ";";
+        }
+      }
+    }
+  console.log(retString);
+	return retString;
+}
+
+export function validateClass(source: string, options: ParserOptions) : string {
+	var retString = "";
+  
+  while(source) {
+    var matches = options.compiledClasses.exec(source);
+      if (matches) {
+        source = source.substring(matches[0].length);
+        if (matches[1]) {
+          retString = retString + ((retString === '') ? '' : ' ') + matches[1]; 
+        }
+      }
+  }
+  
+  return retString;
 }

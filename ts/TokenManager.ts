@@ -56,7 +56,7 @@ export class TokenManager {
 				var regex = this._block[i];
 				var matches = regex.regex.exec(source.source);
 				if (matches && regex.validate(matches)) {
-					var retTokens = regex.apply(source, matches);
+					var retTokens = regex.apply(source, matches, this.options);
 					for(var ii = 0; ii < retTokens.length; ii++) {
 						tokens.push(retTokens[ii]);
 						if (retTokens[ii].processBlock) {
