@@ -1,5 +1,5 @@
 {
-  "name": "demgel-parser",
+  "name": "demgel-markup-parser",
   "description": "A General Purpose parser for various markup languages as well as custom markup",
   "main": "src/DemgelParser.js",
   "authors": [
