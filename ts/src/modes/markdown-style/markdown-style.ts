@@ -1,73 +1,28 @@
 import {IParseSpec} from '../../Specs';
-import {TokenParseType, ITokenRegex, ISource} from '../../TokenRegex';
+import {TokenParseType, ITokenRegex} from '../../TokenRegex';
+import {ISource} from '../../Source';
 import {IToken} from '../../Token';
-import {replace} from '../../Helpers'
+import {replace, validateStyle, validateClass} from '../../Helpers';
+import {ParserOptions} from '../../ParserOptions';
+import {MarkdownStyleRules} from './markdown-style-rules';
 
-export class MarkdownSpec implements IParseSpec {
+export class MarkdownStyleSpec implements IParseSpec {
 	regexTokens: Array<ITokenRegex>;
-	block = {
-		newline: /^\n+/,
-		code: /^( {4}[^\n]+\n*)+/,
-		hr: /^( *[-*_]){3,} *(?:\n+|$)/,
-		heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
-		lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
-		blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
-		def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
-		paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|def))+)\n*/,
-  		text: /^[^\n]+/
-	}
-	
-	inline = {
-		escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
-  		autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
-  		//url: noop,
-  		tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,
-  		link: /^!?\[(inside)\]\(href\)/,
-  		reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
-  		nolink: /^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,
-  		strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
-  		em: /^\b_((?:[^_]|__)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
-  		code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
-  		br: /^ {2,}\n(?!\s*$)/,
-  		//del: noop,
-  		text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/,
-		_inside: /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/,
-		_href: /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/
-	}
-	
-	constructor() {
-		this.block.blockquote = replace(this.block.blockquote)
-  			('def', this.block.def)
-  			();
-		this.block.paragraph = replace(this.block.paragraph)
-			('hr', this.block.hr)
-			('heading', this.block.heading)
-			('lheading', this.block.lheading)
-			('blockquote', this.block.blockquote)
-			// ('tag', '<' + this.block._tag)
-			('def', this.block.def)
-			();
+	rules = new MarkdownStyleRules();
 
-		this.inline.link = replace(this.inline.link)
-  			('inside', this.inline._inside)
-  			('href', this.inline._href)
-  			();
-
-		this.inline.reflink = replace(this.inline.reflink)
-  			('inside', this.inline._inside)
-  			();
-		
+	constructor() {		
 		this.regexTokens = [
-			new NewLine(this.block.newline),
-			new CodeBlock(this.block.code),
-			new HrBlock(this.block.hr),
-			new BlockQuote(this.block.blockquote),
-			new HeadingBlock(this.block.heading),
-			new LHeading(this.block.lheading),
-			new Paragraph(this.block.paragraph),
-			new Text(this.block.text),
+			new NewLine(this.rules.block.newline),
+			new CodeBlock(this.rules.block.code),
+			new HrBlock(this.rules.block.hr),
+			new BlockQuote(this.rules.block.blockquote),
+			new HeadingBlock(this.rules.block.heading),
+			new LHeading(this.rules.block.lheading),
+			new Paragraph(this.rules.block.paragraph),
+			new Text(this.rules.block.text),
 			// Inline
-			new InlineText(this.inline.text)
+			new SpanTag(this.rules.inline.span),
+			new InlineText(this.rules.inline.text)
 		]
 	}
 	
@@ -112,11 +67,11 @@ class CodeBlock implements ITokenRegex {
 		return true;
 	}
 				
-	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+	apply(source: ISource, matches: RegExpExecArray, options: ParserOptions) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
 		var cap = matches[0].replace(/^ {4}/gm, '');
-		return [{openTag: '<pre>\n\t<code>\n\t\t',
-			closeTag: '\t</code>\n</pre>\n', 
+		return [{openTag: '<pre><code>',
+			closeTag: '</code></pre>\n', 
 			text: {source: cap},
 			sanitize: false}];
 	}
@@ -154,11 +109,24 @@ class HeadingBlock implements ITokenRegex {
 		return true;
 	}
 				
-	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+	apply(source: ISource, matches: RegExpExecArray, options: ParserOptions) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
-		return [{openTag: '<h' + matches[1].length + '>', 
+		var token = '<h' + matches[1].length;
+		
+		var styles = validateStyle(matches[2], options);
+		if (styles !== '') {
+			token = token + ' style="' + styles + '"';
+		}
+		var classes = validateClass(matches[3], options);
+		if (classes !== '') {
+			token = token + ' class="' + classes + '"';
+		}
+		
+		token = token + '>';
+		
+		return [{openTag: token, 
 			    closeTag: '</h' + matches[1].length + '>\n', 
-			    text: {source: matches[2]}}];
+			    text: {source: matches[4]}}];
 	}
 }
 
@@ -251,10 +219,52 @@ class BlockQuote implements ITokenRegex {
 	}
 }
 
+/**
+ * Inline Classes
+ */
+
+class SpanTag implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 75;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate() : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray, options: ParserOptions) : Array<IToken> {
+		console.log(matches);
+		source.source = source.source.substring(matches[0].length);
+		
+		var token = '<span';
+		
+		var styles = validateStyle(matches[1], options);
+		if (styles !== '') {
+			token = token + ' style="' + styles + '"';
+		}
+		var classes = validateClass(matches[2], options);
+		if (classes !== '') {
+			token = token + ' class="' + classes + '"';
+		}
+		
+		token = token + '>';
+		
+		return [{
+					openTag: token,
+					closeTag: '</span>',
+					text: {source: matches[3]}
+				}];
+	}
+}
+
 class InlineText implements ITokenRegex {
 	regex: RegExp;
 	parseType = TokenParseType.Inline;
-	priority = 10;
+	priority = 100;
 	
 	constructor(reg: RegExp) {
 		this.regex = reg;

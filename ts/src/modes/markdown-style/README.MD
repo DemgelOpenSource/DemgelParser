@@ -1,9 +1,9 @@
 ## Markdown With Styles
-Markdown with Styles is a simple modification to show how Demgel-Parser can be used to create custom rendering specs. It simply allows for the addition of ```styles``` or ```classes``` to markdown.
+Markdown with Styles is a simple modification to show how Demgel-Parser can be used to create custom rendering specs. It simply allows for the addition of `styles` or `classes` to markdown.
 
 ## Usages
 ### Styles
-Add the ```'color: red'``` style to a header
+Add the `'color: red'` style to a header
 ``` markdown
 ##{color: red} Header Text
 ```

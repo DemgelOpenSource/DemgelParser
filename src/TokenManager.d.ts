@@ -1,5 +1,5 @@
 import { IToken } from './Token';
-import { ISource } from './TokenRegex';
+import { ISource } from './Source';
 import { ParserOptions } from './ParserOptions';
 export declare class TokenManager {
     private options;

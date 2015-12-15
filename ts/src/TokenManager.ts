@@ -1,5 +1,6 @@
 import {IToken} from './Token';
-import {ITokenRegex, TokenParseType, ISource} from './TokenRegex'
+import {ITokenRegex, TokenParseType} from './TokenRegex'
+import {ISource} from './Source';
 import {ParserOptions} from './ParserOptions';
 import {escape} from './Helpers';
 
@@ -82,7 +83,7 @@ export class TokenManager {
 				var regex = this._inline[i];
 				var matches = regex.regex.exec(token.text.source);
 				if (matches && regex.validate(matches)) {
-					var retTokens = regex.apply(token.text, matches);
+					var retTokens = regex.apply(token.text, matches, this.options);
 					for(var ii = 0; ii < retTokens.length; ii++) {
 						token.inlineTokens.push(retTokens[ii]);
 						if (this.options.sanitize) {

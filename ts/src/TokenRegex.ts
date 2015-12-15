@@ -1,4 +1,5 @@
 import {IToken} from './Token';
+import {ISource} from './Source';
 import {ParserOptions} from './ParserOptions';
 
 export enum TokenParseType {
@@ -16,8 +17,4 @@ export interface ITokenRegex {
 	validate(matches: RegExpExecArray) : boolean;
 	// Return the generated element
 	apply(source: ISource, matches: RegExpExecArray, options?: ParserOptions) : Array<IToken>;
-}
-
-export interface ISource {
-	source: string;
 }

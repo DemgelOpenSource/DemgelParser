@@ -4,15 +4,15 @@
 DemgelParser is a simple parser for custom markup languages. It is written in completely in Typescript.
 
 ## Modes
-DemgelParser uses ```modes``` to handle parsing. Modes are the backbone of this parser, and anyone can extend/create a mode.
+DemgelParser uses `modes` to handle parsing. Modes are the backbone of this parser, and anyone can extend/create a mode.
 
 ### Examples
-To see some example modes, look in the modes directory. Currently ```markdown``` is currently the most complete markup language supported.
+To see some example modes, look in the modes directory. Currently `markdown` is currently the most complete markup language supported.
 
 ## Usage
 
 ``` typescript
-import {DemgelParser} from '../DemgelParser';
+import {DemgelParser} from 'demgel-parser/demgel-parser';
 
 var parser = new DemgelParser();
 var parsed = parser.parse(`## I am using DemgelParser`);

@@ -1,4 +1,4 @@
-import {ISource}  from './TokenRegex';
+import {ISource}  from './Source';
 
 export interface IToken {
 	// The open tag with styles

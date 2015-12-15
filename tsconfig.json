@@ -2,10 +2,10 @@
 	"compilerOptions": {
 		"target": "ES5",
 		"module": "commonjs",
-		"sourceMap": true,
-		"outDir": "./src",
-		"inlineSourceMap": true,
 		"declaration": true,
-		"sourceRoot": "./ts"
+		"sourceRoot": "./ts",
+		"outDir": ".",
+		"sourceMap": true,
+		"inlineSourceMap": true
 	}
 }

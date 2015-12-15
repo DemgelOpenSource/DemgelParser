@@ -1,16 +1,16 @@
 import {IParseSpec} from '../../Specs';
-import {TokenParseType, ITokenRegex, ISource} from '../../TokenRegex';
+import {TokenParseType, ITokenRegex} from '../../TokenRegex';
+import {ISource} from '../../Source';
 import {IToken} from '../../Token';
-import {replace, validateStyle, validateClass} from '../../Helpers';
-import {ParserOptions} from '../../ParserOptions';
+import {replace} from '../../Helpers'
 
-export class MarkdownStyleSpec implements IParseSpec {
+export class MarkdownSpec implements IParseSpec {
 	regexTokens: Array<ITokenRegex>;
 	block = {
 		newline: /^\n+/,
 		code: /^( {4}[^\n]+\n*)+/,
 		hr: /^( *[-*_]){3,} *(?:\n+|$)/,
-		heading: /^ *(#{1,6})styles *([^\n]+?) *#* *(?:\n+|$)/,
+		heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
 		lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
 		blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
 		def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
@@ -36,17 +36,10 @@ export class MarkdownStyleSpec implements IParseSpec {
 		_href: /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/
 	}
 	
-	styles = /(?:{(.+)}|\[(.+)\])?/;
-	
 	constructor() {
 		this.block.blockquote = replace(this.block.blockquote)
   			('def', this.block.def)
   			();
-			  
-	    this.block.heading = replace(this.block.heading)
-			('styles', this.styles)
-			();
-			
 		this.block.paragraph = replace(this.block.paragraph)
 			('hr', this.block.hr)
 			('heading', this.block.heading)
@@ -120,11 +113,11 @@ class CodeBlock implements ITokenRegex {
 		return true;
 	}
 				
-	apply(source: ISource, matches: RegExpExecArray, options: ParserOptions) : Array<IToken> {
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
 		var cap = matches[0].replace(/^ {4}/gm, '');
-		return [{openTag: '<pre><code>',
-			closeTag: '</code></pre>\n', 
+		return [{openTag: '<pre>\n\t<code>\n\t\t',
+			closeTag: '\t</code>\n</pre>\n', 
 			text: {source: cap},
 			sanitize: false}];
 	}
@@ -162,26 +155,11 @@ class HeadingBlock implements ITokenRegex {
 		return true;
 	}
 				
-	apply(source: ISource, matches: RegExpExecArray, options: ParserOptions) : Array<IToken> {
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
-		var token = '<h' + matches[1].length;
-		if (matches[2]) {
-			var styles = validateStyle(matches[2], options);
-			if (styles !== '') {
-				token = token + ' style="' + styles + '"';
-			}
-		}
-		if (matches[3]) {
-			var classes = validateClass(matches[3], options);
-			if (classes !== '') {
-				token = token + ' class="' + classes + '"';
-			}
-		}
-		token = token + '>';
-		
-		return [{openTag: token, 
+		return [{openTag: '<h' + matches[1].length + '>', 
 			    closeTag: '</h' + matches[1].length + '>\n', 
-			    text: {source: matches[4]}}];
+			    text: {source: matches[2]}}];
 	}
 }
 

@@ -1,7 +1,4 @@
-import { IParseSpec } from '../Specs';
-import { ITokenRegex, ISource } from '../TokenRegex';
-export declare class MarkdownSpec implements IParseSpec {
-    regexTokens: Array<ITokenRegex>;
+export declare class MarkdownStyleRules {
     block: {
         newline: RegExp;
         code: RegExp;
@@ -27,7 +24,8 @@ export declare class MarkdownSpec implements IParseSpec {
         text: RegExp;
         _inside: RegExp;
         _href: RegExp;
+        span: RegExp;
     };
+    styles: RegExp;
     constructor();
-    preProcess(source: ISource): void;
 }

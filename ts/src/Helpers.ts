@@ -50,8 +50,7 @@ export function validateStyle(source: string, options: ParserOptions) : string {
 }
 
 export function validateClass(source: string, options: ParserOptions) : string {
-	var retString = "";
-  
+  var retString = "";
   while(source) {
     var matches = options.compiledClasses.exec(source);
       if (matches) {
