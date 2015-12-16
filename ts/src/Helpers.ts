@@ -38,14 +38,13 @@ export function validateStyle(source: string, options: ParserOptions) : string {
   var retString = "";
   while(source) {
     var matches = options.compiledStyles.exec(source);
-      if (matches) {
-        source = source.substring(matches[0].length);
-        if (matches[1]) {
-          retString = retString + matches[2] + ": " + matches[3] + ";";
-        }
+    if (matches) {
+      source = source.substring(matches[0].length);
+      if (matches[1]) {
+        retString = retString + matches[2] + ": " + matches[3] + ";";
       }
     }
-  console.log(retString);
+  }
 	return retString;
 }
 
@@ -53,13 +52,12 @@ export function validateClass(source: string, options: ParserOptions) : string {
   var retString = "";
   while(source) {
     var matches = options.compiledClasses.exec(source);
-      if (matches) {
-        source = source.substring(matches[0].length);
-        if (matches[1]) {
-          retString = retString + ((retString === '') ? '' : ' ') + matches[1]; 
-        }
+    if (matches) {
+      source = source.substring(matches[0].length);
+      if (matches[1]) {
+        retString = retString + ((retString === '') ? '' : ' ') + matches[1]; 
       }
+    }
   }
-  
   return retString;
 }

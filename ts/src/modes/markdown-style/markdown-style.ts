@@ -237,7 +237,6 @@ class SpanTag implements ITokenRegex {
 	}
 	
 	apply(source: ISource, matches: RegExpExecArray, options: ParserOptions) : Array<IToken> {
-		console.log(matches);
 		source.source = source.source.substring(matches[0].length);
 		
 		var token = '<span';

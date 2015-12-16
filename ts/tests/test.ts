@@ -1,6 +1,5 @@
-import {DemgelParser} from '../src/DemgelParser';
-import {ParserOptions} from '../src/ParserOptions';
-import {MarkdownStyleSpec} from '../src/modes/markdown-style/markdown-style'
+import {DemgelParser, ParserOptions} from '../demgel-parser';
+import {MarkdownStyleSpec} from '../modes';
 
 var options = new ParserOptions(new MarkdownStyleSpec());
 options.allowedStyles = ['color', 'background'];
