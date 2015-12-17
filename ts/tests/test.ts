@@ -6,7 +6,7 @@ options.allowedStyles = ['color', 'background'];
 options.allowedClasses = ['red', 'blue'];
 var parser = new DemgelParser(options);
 var parsed = parser.parse(`     
-##[red2 dafsd,asdfas asdf blue] hello world
+##[red2 dafsd,asdfas asdf blue] __hello__ world
 
     this should be code <b>test</b>
 ---
@@ -14,7 +14,7 @@ Something
 ==
 justsomething <div>enocded?</div>
 
-> someblock quote text
+> someblock _quote_ text
 > and somemore...
 > > and again <div>another Test</div>
 

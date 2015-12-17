@@ -22,6 +22,8 @@ export class MarkdownStyleSpec implements IParseSpec {
 			new Text(this.rules.block.text),
 			// Inline
 			new SpanTag(this.rules.inline.span),
+			new BoldText(this.rules.inline.strong),
+			new ItalicText(this.rules.inline.em),
 			new InlineText(this.rules.inline.text)
 		]
 	}
@@ -276,5 +278,51 @@ class InlineText implements ITokenRegex {
 	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
 		return [{text: {source: matches[0]}}]
+	}
+}
+
+class BoldText implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 90;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		return [{
+					openTag: '<strong>',
+					text: {source: matches[1]},
+					closeTag: '</strong>',
+				}];
+	}
+}
+
+class ItalicText implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 80;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		return [{
+					openTag: '<em>',
+					text: {source: matches[1]},
+					closeTag: '</em>',
+				}];
 	}
 }
