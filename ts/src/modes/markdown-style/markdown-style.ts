@@ -278,7 +278,9 @@ class InlineText implements ITokenRegex {
 	
 	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
-		return [{text: {source: matches[0]}}]
+		return [{
+					text: {source: matches[0]}
+				}];
 	}
 }
 
