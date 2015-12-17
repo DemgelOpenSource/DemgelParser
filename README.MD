@@ -1,5 +1,9 @@
 [![demgel MyGet Build Status](https://www.myget.org/BuildSource/Badge/demgel?identifier=ac684281-7c39-4236-ae97-d3ebc261324f)](https://www.myget.org/)
 
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/tenowg.svg)](https://saucelabs.com/u/tenowg)
+
+
 # DemgelParser
 
 [![Join the chat at https://gitter.im/DemgelOpenSource/DemgelParser](https://badges.gitter.im/DemgelOpenSource/DemgelParser.svg)](https://gitter.im/DemgelOpenSource/DemgelParser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

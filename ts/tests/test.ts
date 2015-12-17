@@ -22,4 +22,5 @@ justsomething <div>enocded?</div>
 *[blue][thing styled with class]
 `);
 
+parsed = parser.parse('test');
 console.log(parsed);
