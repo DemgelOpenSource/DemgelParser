@@ -24,6 +24,7 @@ export class MarkdownStyleSpec implements IParseSpec {
 			new SpanTag(this.rules.inline.span),
 			new BoldText(this.rules.inline.strong),
 			new ItalicText(this.rules.inline.em),
+			new CodeText(this.rules.inline.code),
 			new InlineText(this.rules.inline.text)
 		]
 	}
@@ -323,6 +324,29 @@ class ItalicText implements ITokenRegex {
 					openTag: '<em>',
 					text: {source: matches[1]},
 					closeTag: '</em>',
+				}];
+	}
+}
+
+class CodeText implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 70;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		return [{
+					openTag: '<pre>',
+					text: {source: matches[2]},
+					closeTag: '</pre>',
 				}];
 	}
 }

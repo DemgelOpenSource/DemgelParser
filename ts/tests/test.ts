@@ -6,7 +6,7 @@ options.allowedStyles = ['color', 'background'];
 options.allowedClasses = ['red', 'blue'];
 var parser = new DemgelParser(options);
 var parsed = parser.parse(`     
-##[red2 dafsd,asdfas asdf blue] __hello__ world
+##[red2 dafsd,asdfas asdf blue] __hello__ ` + '`world`' +`
 
     this should be code <b>test</b>
 ---
