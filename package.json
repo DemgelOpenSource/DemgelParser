@@ -9,7 +9,7 @@
     "url": "https://github.com/DemgelOpenSource/DemgelParser"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "no test"
   },
   "bugs": {
     "url": "https://github.com/DemgelOpenSource/DemgelParser/issues"

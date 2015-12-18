@@ -5,6 +5,8 @@ branches:
 node_js:
   - "4.1"
 install:
-  - "npm install"
   - "npm install -g http-server"
   - "http-server&"
+  - "npm install"
+script:
+  - "grunt test"
