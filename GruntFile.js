@@ -33,7 +33,7 @@ module.exports = function(grunt) {
                 options: {
                     urls: ["http://localhost:8080/qunit/index.html"],
                     tunnelTimeout: 5,
-                    build: 1,
+                    build: process.env.TRAVIS_JOB_ID,
                     concurrency: 3,
                     browsers: browsers,
                     testname: "qunit tests",
