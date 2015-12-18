@@ -6,4 +6,4 @@ node_js:
   - "4.1"
 install:
   - "npm install -g http-server"
-  - "http-server"
+  - "http-server&"
