@@ -5,10 +5,13 @@ export declare class MarkdownStyleRules {
         hr: RegExp;
         heading: RegExp;
         lheading: RegExp;
+        list: RegExp;
         blockquote: RegExp;
         def: RegExp;
         paragraph: RegExp;
         text: RegExp;
+        bullet: RegExp;
+        item: RegExp;
     };
     inline: {
         escape: RegExp;

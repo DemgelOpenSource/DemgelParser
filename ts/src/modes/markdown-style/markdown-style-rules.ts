@@ -7,10 +7,14 @@ export class MarkdownStyleRules {
 		hr: /^( *[-*_]){3,} *(?:\n+|$)/,
 		heading: /^ *(#{1,6})styles *([^\n]+?) *#* *(?:\n+|$)/,
 		lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
+		list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
 		blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
 		def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
 		paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|def))+)\n*/,
-  		text: /^[^\n]+/
+  		text: /^[^\n]+/,
+		  
+		bullet: /(?:[*+-]|\d+\.)/,
+		item: /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/
 	}
 	
 	inline = {
@@ -64,6 +68,15 @@ export class MarkdownStyleRules {
 			  
 		this.inline.span = replace(this.inline.span)
 			('styles', this.styles)
+			();
+			
+		this.block.item = replace(this.block.item, 'gm')
+			(/bull/g, this.block.bullet)
+			();
+		this.block.list = replace(this.block.list)
+			(/bull/g, this.block.bullet)
+			('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
+			('def', '\\n+(?=' + this.block.def.source + ')')
 			();
 	}
 }

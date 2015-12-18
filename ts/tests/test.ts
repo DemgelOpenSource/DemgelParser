@@ -20,7 +20,17 @@ justsomething <div>enocded?</div>
 
 *{color: red}[something in red]
 *[blue][thing styled with class]
+
+ * list item one 
+ * list _item_ two
+ * list itme three
+ * * test
+ * * again
+ * another line
+
+awerasd
+hello __there__
 `);
 
-parsed = parser.parse('test');
+// parsed = parser.parse('test');
 console.log(parsed);

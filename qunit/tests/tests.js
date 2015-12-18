@@ -26,7 +26,7 @@ QUnit.testStart(function(testDetails){
 });
 
 test( "hello test", function( assert ) {
-  var demgelparser = new parser.DemgelParser();
-  var parsed = demgelparser.parse("test");
-  assert.ok( parsed === "<p>test</p>\n", parsed );
+  var parser = new demgelparser.DemgelParser();
+  var parsed = parser.parse("test");
+  assert.ok( parsed === "<p>test</p>", parsed );
 });

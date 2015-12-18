@@ -1,9 +1,10 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.parser = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.demgelparser = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 __export(require('./src/DemgelParser'));
 __export(require('./src/ParserOptions'));
+
 },{"./src/DemgelParser":2,"./src/ParserOptions":4}],2:[function(require,module,exports){
 var Renderer_1 = require('./Renderer');
 var TokenManager_1 = require('./TokenManager');
@@ -29,8 +30,12 @@ var DemgelParser = (function () {
     return DemgelParser;
 })();
 exports.DemgelParser = DemgelParser;
+
 },{"./ParserOptions":4,"./Renderer":5,"./TokenManager":6}],3:[function(require,module,exports){
 function escape(html, encode) {
+    if (!html) {
+        return '';
+    }
     return html
         .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -94,6 +99,7 @@ function validateClass(source, options) {
     return retString;
 }
 exports.validateClass = validateClass;
+
 },{}],4:[function(require,module,exports){
 var markdown_1 = require('./modes/markdown/markdown');
 var Helpers_1 = require('./Helpers');
@@ -152,6 +158,7 @@ var ParserOptions = (function () {
     return ParserOptions;
 })();
 exports.ParserOptions = ParserOptions;
+
 },{"./Helpers":3,"./modes/markdown/markdown":8}],5:[function(require,module,exports){
 var Renderer = (function () {
     function Renderer() {
@@ -177,6 +184,7 @@ var Renderer = (function () {
     return Renderer;
 })();
 exports.Renderer = Renderer;
+
 },{}],6:[function(require,module,exports){
 var TokenRegex_1 = require('./TokenRegex');
 var Helpers_1 = require('./Helpers');
@@ -267,6 +275,7 @@ var TokenManager = (function () {
     return TokenManager;
 })();
 exports.TokenManager = TokenManager;
+
 },{"./Helpers":3,"./TokenRegex":7}],7:[function(require,module,exports){
 (function (TokenParseType) {
     TokenParseType[TokenParseType["Inline"] = 0] = "Inline";
@@ -274,6 +283,7 @@ exports.TokenManager = TokenManager;
     TokenParseType[TokenParseType["InlineBlock"] = 2] = "InlineBlock";
 })(exports.TokenParseType || (exports.TokenParseType = {}));
 var TokenParseType = exports.TokenParseType;
+
 },{}],8:[function(require,module,exports){
 var TokenRegex_1 = require('../../TokenRegex');
 var Helpers_1 = require('../../Helpers');
@@ -285,10 +295,13 @@ var MarkdownSpec = (function () {
             hr: /^( *[-*_]){3,} *(?:\n+|$)/,
             heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
             lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
+            list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
             blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
             def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
             paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|def))+)\n*/,
-            text: /^[^\n]+/
+            text: /^[^\n]+/,
+            bullet: /(?:[*+-]|\d+\.)/,
+            item: /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/
         };
         this.inline = {
             escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
@@ -309,6 +322,8 @@ var MarkdownSpec = (function () {
         };
         this.block.blockquote = Helpers_1.replace(this.block.blockquote)('def', this.block.def)();
         this.block.paragraph = Helpers_1.replace(this.block.paragraph)('hr', this.block.hr)('heading', this.block.heading)('lheading', this.block.lheading)('blockquote', this.block.blockquote)('def', this.block.def)();
+        this.block.item = Helpers_1.replace(this.block.item, 'gm')(/bull/g, this.block.bullet)();
+        this.block.list = Helpers_1.replace(this.block.list)(/bull/g, this.block.bullet)('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')('def', '\\n+(?=' + this.block.def.source + ')')();
         this.inline.link = Helpers_1.replace(this.inline.link)('inside', this.inline._inside)('href', this.inline._href)();
         this.inline.reflink = Helpers_1.replace(this.inline.reflink)('inside', this.inline._inside)();
         this.regexTokens = [
@@ -317,10 +332,14 @@ var MarkdownSpec = (function () {
             new HrBlock(this.block.hr),
             new BlockQuote(this.block.blockquote),
             new HeadingBlock(this.block.heading),
+            new List(this.block.list, this.block.item),
             new LHeading(this.block.lheading),
             new Paragraph(this.block.paragraph),
             new Text(this.block.text),
             // Inline
+            new CodeBlock(this.inline.code),
+            new ItalicText(this.inline.em),
+            new BoldText(this.inline.strong),
             new InlineText(this.inline.text)
         ];
     }
@@ -429,12 +448,76 @@ var Paragraph = (function () {
     Paragraph.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
         return [{ openTag: '<p>',
-                closeTag: '</p>\n',
+                closeTag: '</p>',
                 text: { source: matches[1].charAt(matches[1].length - 1) === '\n'
                         ? matches[1].slice(0, -1)
                         : matches[1] } }];
     };
     return Paragraph;
+})();
+// Code here is currently ported from marked... Thanks
+var List = (function () {
+    function List(regex, itemReg) {
+        this.regex = regex;
+        this.itemReg = itemReg;
+        this.parseType = TokenRegex_1.TokenParseType.Block;
+        this.priority = 6;
+    }
+    List.prototype.validate = function (matches) {
+        return true;
+    };
+    List.prototype.apply = function (source, matches) {
+        source.source = source.source.substring(matches[0].length);
+        var bull = matches[2];
+        var items = matches[0].match(this.itemReg);
+        var next = { next: false, source: { source: null } };
+        var tokens = [];
+        tokens.push({ openTag: '<ul>' });
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            // Remove the list item's bullet
+            var space = item.length;
+            item = item.replace(/^ *([*+-]|\d+\.) +/, '');
+            // Outdent
+            if (~item.indexOf('\n ')) {
+                space -= item.length;
+                item = item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '');
+            }
+            // // Determine whether the next list item belongs here.
+            // // Backpedal if it does not belong in this list.
+            // if (this.options.smartLists && i !== l - 1) {
+            //   b = block.bullet.exec(cap[i + 1])[0];
+            //   if (bull !== b && !(bull.length > 1 && b.length > 1)) {
+            //     src = cap.slice(i + 1).join('\n') + src;
+            //     i = l - 1;
+            //   }
+            // }
+            // Determine whether item is loose or not.
+            // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+            // for discount behavior.
+            var loose = next.next || /\n\n(?!\s*$)/.test(item);
+            if (i !== items.length - 1) {
+                next.next = item.charAt(item.length - 1) === '\n';
+                if (!loose)
+                    loose = next.next;
+            }
+            // Add Token for item here (set to be parsed as inline)
+            if (loose) {
+                next.source.source = next.source.source + item;
+            }
+            else {
+                tokens.push({ openTag: '<li>' });
+                tokens.push({ text: next.source.source ? next.source : { source: item },
+                    processBlock: true });
+                tokens.push({ closeTag: '</li>\n' });
+                next.source.source = null;
+            }
+        }
+        // Add List item end
+        tokens.push({ closeTag: '</ul>\n' });
+        return tokens;
+    };
+    return List;
 })();
 var Text = (function () {
     function Text(reg) {
@@ -488,5 +571,63 @@ var InlineText = (function () {
     };
     return InlineText;
 })();
+var BoldText = (function () {
+    function BoldText(reg) {
+        this.parseType = TokenRegex_1.TokenParseType.Inline;
+        this.priority = 90;
+        this.regex = reg;
+    }
+    BoldText.prototype.validate = function (matches) {
+        return true;
+    };
+    BoldText.prototype.apply = function (source, matches) {
+        source.source = source.source.substring(matches[0].length);
+        return [{
+                openTag: '<strong>',
+                text: { source: matches[1] },
+                closeTag: '</strong>',
+            }];
+    };
+    return BoldText;
+})();
+var ItalicText = (function () {
+    function ItalicText(reg) {
+        this.parseType = TokenRegex_1.TokenParseType.Inline;
+        this.priority = 80;
+        this.regex = reg;
+    }
+    ItalicText.prototype.validate = function (matches) {
+        return true;
+    };
+    ItalicText.prototype.apply = function (source, matches) {
+        source.source = source.source.substring(matches[0].length);
+        return [{
+                openTag: '<em>',
+                text: { source: matches[1] },
+                closeTag: '</em>',
+            }];
+    };
+    return ItalicText;
+})();
+var CodeText = (function () {
+    function CodeText(reg) {
+        this.parseType = TokenRegex_1.TokenParseType.Inline;
+        this.priority = 70;
+        this.regex = reg;
+    }
+    CodeText.prototype.validate = function (matches) {
+        return true;
+    };
+    CodeText.prototype.apply = function (source, matches) {
+        source.source = source.source.substring(matches[0].length);
+        return [{
+                openTag: '<pre>',
+                text: { source: matches[2] },
+                closeTag: '</pre>',
+            }];
+    };
+    return CodeText;
+})();
+
 },{"../../Helpers":3,"../../TokenRegex":7}]},{},[1])(1)
 });

@@ -12,10 +12,14 @@ export class MarkdownSpec implements IParseSpec {
 		hr: /^( *[-*_]){3,} *(?:\n+|$)/,
 		heading: /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,
 		lheading: /^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,
+		list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
 		blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
 		def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
 		paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|def))+)\n*/,
-  		text: /^[^\n]+/
+  		text: /^[^\n]+/,
+		  
+		bullet: /(?:[*+-]|\d+\.)/,
+		item: /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/
 	}
 	
 	inline = {
@@ -40,6 +44,7 @@ export class MarkdownSpec implements IParseSpec {
 		this.block.blockquote = replace(this.block.blockquote)
   			('def', this.block.def)
   			();
+			  
 		this.block.paragraph = replace(this.block.paragraph)
 			('hr', this.block.hr)
 			('heading', this.block.heading)
@@ -49,11 +54,19 @@ export class MarkdownSpec implements IParseSpec {
 			('def', this.block.def)
 			();
 
+		this.block.item = replace(this.block.item, 'gm')
+			(/bull/g, this.block.bullet)
+			();
+		this.block.list = replace(this.block.list)
+			(/bull/g, this.block.bullet)
+			('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
+			('def', '\\n+(?=' + this.block.def.source + ')')
+			();
+  
 		this.inline.link = replace(this.inline.link)
   			('inside', this.inline._inside)
   			('href', this.inline._href)
   			();
-
 		this.inline.reflink = replace(this.inline.reflink)
   			('inside', this.inline._inside)
   			();
@@ -64,10 +77,14 @@ export class MarkdownSpec implements IParseSpec {
 			new HrBlock(this.block.hr),
 			new BlockQuote(this.block.blockquote),
 			new HeadingBlock(this.block.heading),
+			new List(this.block.list, this.block.item),
 			new LHeading(this.block.lheading),
 			new Paragraph(this.block.paragraph),
 			new Text(this.block.text),
 			// Inline
+			new CodeBlock(this.inline.code),
+			new ItalicText(this.inline.em),
+			new BoldText(this.inline.strong),
 			new InlineText(this.inline.text)
 		]
 	}
@@ -200,10 +217,82 @@ class Paragraph implements ITokenRegex {
 	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
 		return [{openTag: '<p>',
-			closeTag: '</p>\n',
+			closeTag: '</p>',
 			text: {source: matches[1].charAt(matches[1].length - 1) === '\n' 
 				? matches[1].slice(0, -1)
 				: matches[1]}}]
+	}
+}
+
+// Code here is currently ported from marked... Thanks
+class List implements ITokenRegex {
+	parseType = TokenParseType.Block;
+	priority = 6;
+	
+	constructor(public regex: RegExp, private itemReg: RegExp) {
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		
+		var bull = matches[2];
+		var items = matches[0].match(this.itemReg);
+		var next: {next: boolean, source: ISource} = {next: false, source: {source: null}};
+		
+		var tokens: Array<IToken> = [];
+		tokens.push({openTag: '<ul>'});
+		
+		for(var i = 0; i < items.length; i++) {
+			var item = items[i];
+			
+			// Remove the list item's bullet
+			var space = item.length;
+			item = item.replace(/^ *([*+-]|\d+\.) +/, '');
+			
+			// Outdent
+			if (~item.indexOf('\n ')) {
+				space -= item.length;
+				item = item.replace(new RegExp('^ {1,'+ space + '}', 'gm'), '');
+			}
+			
+			// // Determine whether the next list item belongs here.
+			// // Backpedal if it does not belong in this list.
+			// if (this.options.smartLists && i !== l - 1) {
+			//   b = block.bullet.exec(cap[i + 1])[0];
+			//   if (bull !== b && !(bull.length > 1 && b.length > 1)) {
+			//     src = cap.slice(i + 1).join('\n') + src;
+			//     i = l - 1;
+			//   }
+			// }
+				// Determine whether item is loose or not.
+			// Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+			// for discount behavior.
+			
+        	var loose = next.next || /\n\n(?!\s*$)/.test(item);
+        	if (i !== items.length - 1) {
+          		next.next = item.charAt(item.length - 1) === '\n';
+          		if (!loose) loose = next.next;
+        	}
+			
+			// Add Token for item here (set to be parsed as inline)
+			if (loose) {
+				next.source.source = next.source.source + item;
+			} else {
+				tokens.push({openTag: '<li>'});
+				tokens.push({text: next.source.source ? next.source : {source: item}, 
+					processBlock: true});
+				tokens.push({closeTag: '</li>\n'});
+				next.source.source = null;
+			}
+		}
+		
+		// Add List item end
+		tokens.push({closeTag: '</ul>\n'});
+		return tokens;
 	}
 }
 
@@ -268,5 +357,74 @@ class InlineText implements ITokenRegex {
 	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
 		source.source = source.source.substring(matches[0].length);
 		return [{text: {source: matches[0]}}]
+	}
+}
+
+class BoldText implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 90;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		return [{
+					openTag: '<strong>',
+					text: {source: matches[1]},
+					closeTag: '</strong>',
+				}];
+	}
+}
+
+class ItalicText implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 80;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		return [{
+					openTag: '<em>',
+					text: {source: matches[1]},
+					closeTag: '</em>',
+				}];
+	}
+}
+
+class CodeText implements ITokenRegex {
+	regex: RegExp;
+	parseType = TokenParseType.Inline;
+	priority = 70;
+	
+	constructor(reg: RegExp) {
+		this.regex = reg;
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		return [{
+					openTag: '<pre>',
+					text: {source: matches[2]},
+					closeTag: '</pre>',
+				}];
 	}
 }

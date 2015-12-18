@@ -18,6 +18,7 @@ export class MarkdownStyleSpec implements IParseSpec {
 			new BlockQuote(this.rules.block.blockquote),
 			new HeadingBlock(this.rules.block.heading),
 			new LHeading(this.rules.block.lheading),
+			new List(this.rules.block.list, this.rules.block.item),
 			new Paragraph(this.rules.block.paragraph),
 			new Text(this.rules.block.text),
 			// Inline
@@ -151,6 +152,78 @@ class LHeading implements ITokenRegex {
 		return [{openTag: '<h' + (matches[2] === '=' ? 1 : 2) + '>',
 			closeTag: '</h' + (matches[2] === '=' ?  1 : 2) + '>\n',
 			text: {source: matches[1]}}]
+	}
+}
+
+// Code here is currently ported from marked... Thanks
+class List implements ITokenRegex {
+	parseType = TokenParseType.Block;
+	priority = 6;
+	
+	constructor(public regex: RegExp, private itemReg: RegExp) {
+	}
+	
+	validate(matches: RegExpExecArray) : boolean {
+		return true;
+	}
+	
+	apply(source: ISource, matches: RegExpExecArray) : Array<IToken> {
+		source.source = source.source.substring(matches[0].length);
+		
+		var bull = matches[2];
+		var items = matches[0].match(this.itemReg);
+		var next: {next: boolean, source: ISource} = {next: false, source: {source: null}};
+		
+		var tokens: Array<IToken> = [];
+		tokens.push({openTag: '<ul>'});
+		
+		for(var i = 0; i < items.length; i++) {
+			var item = items[i];
+			
+			// Remove the list item's bullet
+			var space = item.length;
+			item = item.replace(/^ *([*+-]|\d+\.) +/, '');
+			
+			// Outdent
+			if (~item.indexOf('\n ')) {
+				space -= item.length;
+				item = item.replace(new RegExp('^ {1,'+ space + '}', 'gm'), '');
+			}
+			
+			// // Determine whether the next list item belongs here.
+			// // Backpedal if it does not belong in this list.
+			// if (this.options.smartLists && i !== l - 1) {
+			//   b = block.bullet.exec(cap[i + 1])[0];
+			//   if (bull !== b && !(bull.length > 1 && b.length > 1)) {
+			//     src = cap.slice(i + 1).join('\n') + src;
+			//     i = l - 1;
+			//   }
+			// }
+				// Determine whether item is loose or not.
+			// Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+			// for discount behavior.
+			
+        	var loose = next.next || /\n\n(?!\s*$)/.test(item);
+        	if (i !== items.length - 1) {
+          		next.next = item.charAt(item.length - 1) === '\n';
+          		if (!loose) loose = next.next;
+        	}
+			
+			// Add Token for item here (set to be parsed as inline)
+			if (loose) {
+				next.source.source = next.source.source + item;
+			} else {
+				tokens.push({openTag: '<li>'});
+				tokens.push({text: next.source.source ? next.source : {source: item}, 
+					processBlock: true});
+				tokens.push({closeTag: '</li>\n'});
+				next.source.source = null;
+			}
+		}
+		
+		// Add List item end
+		tokens.push({closeTag: '</ul>\n'});
+		return tokens;
 	}
 }
 

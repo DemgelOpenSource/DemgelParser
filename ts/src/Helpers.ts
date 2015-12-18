@@ -1,6 +1,9 @@
 import {ParserOptions} from './ParserOptions';
 
 export function escape(html: string, encode?: boolean) {
+  if (!html) {
+    return '';
+  }
   return html
     .replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;')
     .replace(/</g, '&lt;')
