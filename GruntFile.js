@@ -15,6 +15,10 @@ module.exports = function(grunt) {
         browserName: "internet explorer",
         platform: "WIN7",
         version: "9"
+    }, {
+        browserName: "MicrosoftEdge",
+        platform: "Windows 10",
+        version: "20.10240"
     }];
  
  
@@ -33,7 +37,7 @@ module.exports = function(grunt) {
                 options: {
                     urls: ["http://localhost:8080/qunit/index.html"],
                     tunnelTimeout: 5,
-                    build: process.env.TRAVIS_JOB_ID,
+                    build: process.env.TRAVIS_BUILD_NUMBER,
                     concurrency: 3,
                     browsers: browsers,
                     testname: "qunit tests",
