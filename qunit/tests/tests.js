@@ -40,5 +40,8 @@ test( "code block test", function( assert ) {
     some code
     more code
 `);
-    assert.ok( parsed === `<pre><code>some code\nmore code\n</code></pre>\n`); 
+    assert.ok( parsed === `<pre><code>some code
+more code
+</code></pre>
+`); 
 });
