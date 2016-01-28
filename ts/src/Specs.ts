@@ -1,8 +1,8 @@
-import {ITokenRegex} from './TokenRegex';
-import {ISource} from './Source';
+import {ITokenRegex} from "./TokenRegex";
+import {ISource} from "./Source";
 
 export interface IParseSpec {
-	regexTokens: Array<ITokenRegex>;
-	
-	preProcess(source: ISource);
+    regexTokens: Array<ITokenRegex>;
+
+    preProcess(source: ISource);
 }

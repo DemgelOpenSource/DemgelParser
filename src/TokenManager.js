@@ -1,28 +1,30 @@
-var TokenRegex_1 = require('./TokenRegex');
-var Helpers_1 = require('./Helpers');
+var TokenRegex_1 = require("./TokenRegex");
+var Helpers_1 = require("./Helpers");
 var TokenManager = (function () {
     function TokenManager(options) {
         this.options = options;
         this._inline = [];
         this._block = [];
     }
+    /**
+     * Add each RegexToken from each mode into the arrays
+     */
     TokenManager.prototype.compileTokenRegex = function () {
         for (var i = 0; i < this.options.parserMode.length; i++) {
-            // compile the modes
             for (var ii = 0; ii < this.options.parserMode[i].regexTokens.length; ii++) {
-                var regex = this.options.parserMode[i].regexTokens[ii];
-                switch (regex.parseType) {
+                var regexToken = this.options.parserMode[i].regexTokens[ii];
+                switch (regexToken.parseType) {
                     case TokenRegex_1.TokenParseType.Block: {
-                        this._block.push(regex);
+                        this._block.push(regexToken);
                         break;
                     }
                     case TokenRegex_1.TokenParseType.Inline: {
-                        this._inline.push(regex);
+                        this._inline.push(regexToken);
                         break;
                     }
                     case TokenRegex_1.TokenParseType.InlineBlock: {
-                        this._inline.push(regex);
-                        this._block.push(regex);
+                        this._inline.push(regexToken);
+                        this._block.push(regexToken);
                         break;
                     }
                 }
@@ -32,7 +34,6 @@ var TokenManager = (function () {
         this.options.compiled = true;
     };
     TokenManager.prototype.tokenize = function (source) {
-        var tokens = [];
         if (!this.options.compiled) {
             // Compile the provided ParseSpecs
             this.compileTokenRegex();
@@ -40,13 +41,17 @@ var TokenManager = (function () {
         for (var i = 0; i < this.options.parserMode.length; i++) {
             this.options.parserMode[i].preProcess(source);
         }
-        source.source = source.source.replace(/^ +$/gm, '');
+        source.source = source.source.replace(/^ +$/gm, "");
+        var regex;
+        var matches;
+        var retTokens;
+        var tokens = [];
         while (source.source) {
             for (var i = 0; i < this._block.length; i++) {
-                var regex = this._block[i];
-                var matches = regex.regex.exec(source.source);
+                regex = this._block[i];
+                matches = regex.regex.exec(source.source);
                 if (matches && regex.validate(matches)) {
-                    var retTokens = regex.apply(source, matches, this.options);
+                    retTokens = regex.apply(source, matches, this.options);
                     for (var ii = 0; ii < retTokens.length; ii++) {
                         tokens.push(retTokens[ii]);
                         if (retTokens[ii].processBlock) {
@@ -65,12 +70,15 @@ var TokenManager = (function () {
             return;
         }
         token.inlineTokens = [];
+        var regex;
+        var matches;
+        var retTokens;
         while (token.text.source) {
             for (var i = 0; i < this._inline.length; i++) {
-                var regex = this._inline[i];
-                var matches = regex.regex.exec(token.text.source);
+                regex = this._inline[i];
+                matches = regex.regex.exec(token.text.source);
                 if (matches && regex.validate(matches)) {
-                    var retTokens = regex.apply(token.text, matches, this.options);
+                    retTokens = regex.apply(token.text, matches, this.options);
                     for (var ii = 0; ii < retTokens.length; ii++) {
                         token.inlineTokens.push(retTokens[ii]);
                         if (this.options.sanitize) {

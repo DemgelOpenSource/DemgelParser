@@ -1,6 +1,6 @@
-import { IParseSpec } from '../../Specs';
-import { ITokenRegex } from '../../TokenRegex';
-import { ISource } from '../../Source';
+import { IParseSpec } from "../../Specs";
+import { ITokenRegex } from "../../TokenRegex";
+import { ISource } from "../../Source";
 export declare class MarkdownSpec implements IParseSpec {
     regexTokens: Array<ITokenRegex>;
     block: {

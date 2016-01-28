@@ -1,4 +1,4 @@
-import { ISource } from './Source';
+import { ISource } from "./Source";
 export interface IToken {
     openTag?: string;
     closeTag?: string;

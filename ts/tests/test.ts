@@ -1,14 +1,19 @@
-import {DemgelParser, ParserOptions} from '../demgel-parser';
-import {MarkdownStyleSpec} from '../modes';
+import {DemgelParser, ParserOptions} from "../demgel-parser";
+import {MarkdownStyleSpec} from "../modes";
 
-var options = new ParserOptions(new MarkdownStyleSpec());
-options.allowedStyles = ['color', 'background'];
-options.allowedClasses = ['red', 'blue'];
-var parser = new DemgelParser(options);
-var parsed = parser.parse(`     
-##[red2 dafsd,asdfas asdf blue] __hello__ ` + '`world`' +`
+let options = new ParserOptions(new MarkdownStyleSpec());
+options.allowedStyles = ["color", "background"];
+options.allowedClasses = ["red", "blue"];
+let parser = new DemgelParser(options);
+let parsed = parser.parse(`     
+##[red2 dafsd,asdfas asdf blue] __hello__ world
 
     this should be code <b>test</b>
+    asdfasfasfd
+
+
+
+
 ---
 Something
 ==

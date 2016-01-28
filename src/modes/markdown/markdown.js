@@ -1,5 +1,5 @@
-var TokenRegex_1 = require('../../TokenRegex');
-var Helpers_1 = require('../../Helpers');
+var TokenRegex_1 = require("../../TokenRegex");
+var Helpers_1 = require("../../Helpers");
 var MarkdownSpec = (function () {
     function MarkdownSpec() {
         this.block = {
@@ -19,7 +19,7 @@ var MarkdownSpec = (function () {
         this.inline = {
             escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
             autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
-            //url: noop,
+            // url: noop,
             tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,
             link: /^!?\[(inside)\]\(href\)/,
             reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
@@ -28,17 +28,17 @@ var MarkdownSpec = (function () {
             em: /^\b_((?:[^_]|__)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
             code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
             br: /^ {2,}\n(?!\s*$)/,
-            //del: noop,
+            // del: noop,
             text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/,
             _inside: /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/,
             _href: /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/
         };
-        this.block.blockquote = Helpers_1.replace(this.block.blockquote)('def', this.block.def)();
-        this.block.paragraph = Helpers_1.replace(this.block.paragraph)('hr', this.block.hr)('heading', this.block.heading)('lheading', this.block.lheading)('blockquote', this.block.blockquote)('def', this.block.def)();
-        this.block.item = Helpers_1.replace(this.block.item, 'gm')(/bull/g, this.block.bullet)();
-        this.block.list = Helpers_1.replace(this.block.list)(/bull/g, this.block.bullet)('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')('def', '\\n+(?=' + this.block.def.source + ')')();
-        this.inline.link = Helpers_1.replace(this.inline.link)('inside', this.inline._inside)('href', this.inline._href)();
-        this.inline.reflink = Helpers_1.replace(this.inline.reflink)('inside', this.inline._inside)();
+        this.block.blockquote = Helpers_1.replace(this.block.blockquote)("def", this.block.def)();
+        this.block.paragraph = Helpers_1.replace(this.block.paragraph)("hr", this.block.hr)("heading", this.block.heading)("lheading", this.block.lheading)("blockquote", this.block.blockquote)("def", this.block.def)();
+        this.block.item = Helpers_1.replace(this.block.item, "gm")(/bull/g, this.block.bullet)();
+        this.block.list = Helpers_1.replace(this.block.list)(/bull/g, this.block.bullet)("hr", "\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))")("def", "\\n+(?=" + this.block.def.source + ")")();
+        this.inline.link = Helpers_1.replace(this.inline.link)("inside", this.inline._inside)("href", this.inline._href)();
+        this.inline.reflink = Helpers_1.replace(this.inline.reflink)("inside", this.inline._inside)();
         this.regexTokens = [
             new NewLine(this.block.newline),
             new CodeBlock(this.block.code),
@@ -58,10 +58,10 @@ var MarkdownSpec = (function () {
     }
     MarkdownSpec.prototype.preProcess = function (source) {
         source.source
-            .replace(/\r\n|\r/g, '\n')
-            .replace(/\t/g, '    ')
-            .replace(/\u00e0/g, ' ')
-            .replace(/\u2424/g, '\n');
+            .replace(/\r\n|\r/g, "\n")
+            .replace(/\t/g, "    ")
+            .replace(/\u00e0/g, " ")
+            .replace(/\u2424/g, "\n");
     };
     return MarkdownSpec;
 })();
@@ -92,9 +92,9 @@ var CodeBlock = (function () {
     };
     CodeBlock.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
-        var cap = matches[0].replace(/^ {4}/gm, '');
-        return [{ openTag: '<pre>\n\t<code>\n\t\t',
-                closeTag: '\t</code>\n</pre>\n',
+        var cap = matches[0].replace(/^ {4}/gm, "");
+        return [{ openTag: "<pre>\n\t<code>\n\t\t",
+                closeTag: "\t</code>\n</pre>\n",
                 text: { source: cap },
                 sanitize: false }];
     };
@@ -111,7 +111,7 @@ var HrBlock = (function () {
     };
     HrBlock.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
-        return [{ openTag: '<hr>\n' }];
+        return [{ openTag: "<hr>\n" }];
     };
     return HrBlock;
 })();
@@ -126,8 +126,8 @@ var HeadingBlock = (function () {
     };
     HeadingBlock.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
-        return [{ openTag: '<h' + matches[1].length + '>',
-                closeTag: '</h' + matches[1].length + '>\n',
+        return [{ openTag: "<h" + matches[1].length + ">",
+                closeTag: "</h" + matches[1].length + ">\n",
                 text: { source: matches[2] } }];
     };
     return HeadingBlock;
@@ -143,8 +143,8 @@ var LHeading = (function () {
     };
     LHeading.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
-        return [{ openTag: '<h' + (matches[2] === '=' ? 1 : 2) + '>',
-                closeTag: '</h' + (matches[2] === '=' ? 1 : 2) + '>\n',
+        return [{ openTag: "<h" + (matches[2] === "=" ? 1 : 2) + ">",
+                closeTag: "</h" + (matches[2] === "=" ? 1 : 2) + ">\n",
                 text: { source: matches[1] } }];
     };
     return LHeading;
@@ -160,9 +160,9 @@ var Paragraph = (function () {
     };
     Paragraph.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
-        return [{ openTag: '<p>',
-                closeTag: '</p>',
-                text: { source: matches[1].charAt(matches[1].length - 1) === '\n'
+        return [{ openTag: "<p>",
+                closeTag: "</p>",
+                text: { source: matches[1].charAt(matches[1].length - 1) === "\n"
                         ? matches[1].slice(0, -1)
                         : matches[1] } }];
     };
@@ -185,16 +185,16 @@ var List = (function () {
         var items = matches[0].match(this.itemReg);
         var next = { next: false, source: { source: null } };
         var tokens = [];
-        tokens.push({ openTag: '<ul>' });
+        tokens.push({ openTag: "<ul>" });
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
             // Remove the list item's bullet
             var space = item.length;
-            item = item.replace(/^ *([*+-]|\d+\.) +/, '');
+            item = item.replace(/^ *([*+-]|\d+\.) +/, "");
             // Outdent
-            if (~item.indexOf('\n ')) {
+            if (~item.indexOf("\n ")) {
                 space -= item.length;
-                item = item.replace(new RegExp('^ {1,' + space + '}', 'gm'), '');
+                item = item.replace(new RegExp("^ {1," + space + "}", "gm"), "");
             }
             // // Determine whether the next list item belongs here.
             // // Backpedal if it does not belong in this list.
@@ -210,7 +210,7 @@ var List = (function () {
             // for discount behavior.
             var loose = next.next || /\n\n(?!\s*$)/.test(item);
             if (i !== items.length - 1) {
-                next.next = item.charAt(item.length - 1) === '\n';
+                next.next = item.charAt(item.length - 1) === "\n";
                 if (!loose)
                     loose = next.next;
             }
@@ -219,15 +219,15 @@ var List = (function () {
                 next.source.source = next.source.source + item;
             }
             else {
-                tokens.push({ openTag: '<li>' });
+                tokens.push({ openTag: "<li>" });
                 tokens.push({ text: next.source.source ? next.source : { source: item },
                     processBlock: true });
-                tokens.push({ closeTag: '</li>\n' });
+                tokens.push({ closeTag: "</li>\n" });
                 next.source.source = null;
             }
         }
         // Add List item end
-        tokens.push({ closeTag: '</ul>\n' });
+        tokens.push({ closeTag: "</ul>\n" });
         return tokens;
     };
     return List;
@@ -259,12 +259,12 @@ var BlockQuote = (function () {
     BlockQuote.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
         return [{
-                openTag: '<blockquote>\n',
-                text: { source: matches[0].replace(/^ *> ?/gm, '') },
+                openTag: "<blockquote>\n",
+                text: { source: matches[0].replace(/^ *> ?/gm, "") },
                 processBlock: true
             },
             {
-                closeTag: '</blockquote>\n'
+                closeTag: "</blockquote>\n"
             }];
     };
     return BlockQuote;
@@ -296,9 +296,9 @@ var BoldText = (function () {
     BoldText.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
         return [{
-                openTag: '<strong>',
+                openTag: "<strong>",
                 text: { source: matches[1] },
-                closeTag: '</strong>',
+                closeTag: "</strong>",
             }];
     };
     return BoldText;
@@ -315,9 +315,9 @@ var ItalicText = (function () {
     ItalicText.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
         return [{
-                openTag: '<em>',
+                openTag: "<em>",
                 text: { source: matches[1] },
-                closeTag: '</em>',
+                closeTag: "</em>",
             }];
     };
     return ItalicText;
@@ -334,9 +334,9 @@ var CodeText = (function () {
     CodeText.prototype.apply = function (source, matches) {
         source.source = source.source.substring(matches[0].length);
         return [{
-                openTag: '<pre>',
+                openTag: "<pre>",
                 text: { source: matches[2] },
-                closeTag: '</pre>',
+                closeTag: "</pre>",
             }];
     };
     return CodeText;

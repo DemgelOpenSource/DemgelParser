@@ -1,3 +1,6 @@
+/* global demgelparser */
+/* global test */
+/* global QUnit */
 var log = [];
 var testName;
 QUnit.done = function (test_results) {

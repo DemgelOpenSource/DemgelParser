@@ -1,6 +1,6 @@
-var Renderer_1 = require('./Renderer');
-var TokenManager_1 = require('./TokenManager');
-var ParserOptions_1 = require('./ParserOptions');
+var Renderer_1 = require("./Renderer");
+var TokenManager_1 = require("./TokenManager");
+var ParserOptions_1 = require("./ParserOptions");
 var DemgelParser = (function () {
     function DemgelParser(options) {
         if (options) {

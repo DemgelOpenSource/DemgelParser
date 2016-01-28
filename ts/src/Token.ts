@@ -1,16 +1,16 @@
-import {ISource}  from './Source';
+import {ISource}  from "./Source";
 
 export interface IToken {
 	// The open tag with styles
-	openTag?: string;
+    openTag?: string;
 	// The closing tag
-	closeTag?: string;
+    closeTag?: string;
 	// This will get parsed with In-Line if it exists
-	text?: ISource;
+    text?: ISource;
 	// Should we process text as Block or Inline
-	processBlock?: boolean;
+    processBlock?: boolean;
 	// Inline processed Tokens
-	inlineTokens?: Array<IToken>;
+    inlineTokens?: Array<IToken>;
 	// Override sanitize
-	sanitize?: boolean;
+    sanitize?: boolean;
 }
