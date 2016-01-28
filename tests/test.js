@@ -1,6 +1,6 @@
 var demgel_parser_1 = require("../demgel-parser");
-var modes_1 = require("../modes");
-var options = new demgel_parser_1.ParserOptions(new modes_1.MarkdownStyleSpec());
+//let options = new ParserOptions(new MarkdownStyleSpec());
+var options = new demgel_parser_1.ParserOptions();
 options.allowedStyles = ["color", "background"];
 options.allowedClasses = ["red", "blue"];
 var parser = new demgel_parser_1.DemgelParser(options);

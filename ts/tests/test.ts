@@ -1,7 +1,8 @@
 import {DemgelParser, ParserOptions} from "../demgel-parser";
 import {MarkdownStyleSpec} from "../modes";
 
-let options = new ParserOptions(new MarkdownStyleSpec());
+// let options = new ParserOptions(new MarkdownStyleSpec());
+let options = new ParserOptions();
 options.allowedStyles = ["color", "background"];
 options.allowedClasses = ["red", "blue"];
 let parser = new DemgelParser(options);

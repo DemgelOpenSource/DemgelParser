@@ -35,7 +35,7 @@ test( "should result in <p>test</p>", function( assert ) {
 });
 
 test( "code block test", function( assert ) {
-   var parser = new demgelparser.DemgelParser();
+   var parser = new demgelparser.DemgelParser(new demgelparser.ParserOptions(new demgelparser.MarkdownStyleSpec()));
    var parsed = parser.parse(`
     some code
     more code
