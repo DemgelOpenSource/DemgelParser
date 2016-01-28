@@ -27,6 +27,7 @@ var parser = new demgel_parser_1.DemgelParser(options);
 // hello __there__
 // `);
 var parsed = parser.parse("\n    some code\n    more code\n");
+console.log(parsed === "<pre><code>some code\nmore code\n</code></pre>\n");
 // parsed = parser.parse('test');
 console.log(parsed);
 //# sourceMappingURL=test.js.map

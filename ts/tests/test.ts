@@ -40,7 +40,12 @@ let parser = new DemgelParser(options);
 let parsed = parser.parse(`
     some code
     more code
-`)
+`);
+
+console.log(parsed === `<pre><code>some code
+more code
+</code></pre>
+`);
 
 // parsed = parser.parse('test');
 console.log(parsed);
