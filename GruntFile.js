@@ -1,3 +1,4 @@
+/* global process */
 module.exports = function(grunt) {
     var browsers = [{
         browserName: "firefox",

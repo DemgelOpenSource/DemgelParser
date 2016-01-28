@@ -28,8 +28,17 @@ QUnit.testStart(function(testDetails){
   }
 });
 
-test( "hello test", function( assert ) {
+test( "should result in <p>test</p>", function( assert ) {
   var parser = new demgelparser.DemgelParser();
   var parsed = parser.parse("test");
   assert.ok( parsed === "<p>test</p>", parsed );
+});
+
+test( "code block test", function( assert ) {
+   var parser = new demgelparser.DemgelParser();
+   var parsed = parser.parse(`
+    some code
+    more code
+`);
+    assert.ok( parsed === '<pre><code>some code\nmore code\n</code></pre>'); 
 });
